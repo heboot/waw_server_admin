@@ -51,7 +51,7 @@ export const asyncRouterMap = [
         path: '企业列表',
         name: '企业列表',
         component: () => import('@/views/enterprise/index'),
-        meta: { title: '企业列表', icon: 'table' }
+        meta: { title: '企业列表', icon: 'table',roles:['manager'] }
       },
       {
         path: 'tree',
