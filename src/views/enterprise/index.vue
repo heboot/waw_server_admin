@@ -7,7 +7,7 @@
                 border
                 fit
                 highlight-current-row>
-            <el-table-column   align="center" label="编号" width="95">
+            <el-table-column align="center" label="编号" width="95">
                 <template slot-scope="scope">
                     {{ scope.row.id }}
                 </template>
@@ -19,8 +19,8 @@
             </el-table-column>
             <el-table-column label="补贴报价" width="110" align="center">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.subsidy_info }}</span>
-                    <span>{{ scope.row.subsidy_money }}</span>
+                    <span>{{ scope.row.subsidyInfo }}</span><br/>
+                    <span>{{  scope.row.subsidyMoney }}元</span>
                 </template>
             </el-table-column>
             <el-table-column label="报名人数" width="110" align="center">
@@ -28,16 +28,18 @@
                     {{ scope.row.pageviews }}
                 </template>
             </el-table-column>
-            <el-table-column class-name="status-col" label="状态" width="110" align="center">
+            <el-table-column class-name="status-col" label="状态" width="100" align="center">
                 <template slot-scope="scope">
-                    <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+                    <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | statusFilter2 }}</el-tag>
                 </template>
             </el-table-column>
             <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                     <el-button class="filter-item" type="primary" @click="handleUpdate(scope.row)">设置补贴价格</el-button>
-                    <el-button type="primary">编辑</el-button>
-                    <el-button type="primary">管理</el-button>
+                    <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
+                        <el-button type="primary" >编辑</el-button>
+                    </router-link>
+
                 </template>
             </el-table-column>
 
@@ -53,12 +55,14 @@
         <el-dialog :title="dialogStatus" :visible.sync="dialogFormVisible">
             <el-form
                     ref="dataForm"
-
                     :model="editmoney"
                     label-position="left"
 
                     label-width="70px"
                     style="width: 400px; margin-left:50px;">
+                <el-form-item>
+                    <el-input v-model="enterpriseSubsidyInfo" placeholder="请输入补贴描述"></el-input>
+                </el-form-item>
                 <el-form-item>
                     <el-input v-model="input" placeholder="请输入价格"/>
                 </el-form-item>
@@ -82,15 +86,23 @@
     filters: {
       statusFilter(status) {
         const statusMap = {
-          published: 'success',
-          draft: 'gray',
-          deleted: 'danger'
+          0: 'success',
+          1: 'gray',
+          2: 'danger'
         }
         return statusMap[status]
+      },
+      statusFilter2(status) {
+        const statusMap2 = {
+          0: '正常',
+          1: '关闭'
+        }
+        return statusMap2[status]
       }
     },
     data() {
       return {
+        enterpriseSubsidyInfo: '',
         input: '',
         list: null,
         total: 0,
@@ -107,7 +119,8 @@
         dialogFormVisible: false,
         editmoney: {
           id: -1,
-          subsidy_money: 0,
+          subsidyMoney: 0,
+          subsidyInfo: null,
           currentMoney: 0
         }
       }
@@ -125,19 +138,30 @@
           this.$store.dispatch('setLanguage', 'zh')
         })
       },
+      toEdit(row) {
+        this.$route.push({
+          path: '/404',
+          query: {
+            enterprise: row
+          }
+        })
+      },
       handleCreate(row) {
         this.dialogStatus = '设置补贴价格'
         this.dialogFormVisible = true
         this.currentMoney = row.status
       },
       handleUpdate(row) {
+        this.enterpriseSubsidyInfo = row.subsidyInfo
+        this.input = row.subsidyMoney
         this.editmoney = Object.assign({}, row)
         this.dialogStatus = '设置补贴价格'
         this.dialogFormVisible = true
       },
       submitUpdateSubsidy() {
-        this.editmoney.subsidy_money = this.input
-        updateEnterpriseSubsidy(this.editmoney.id, this.editmoney.subsidy_money, null).then(() => {
+        this.editmoney.subsidyMoney = this.input
+        this.editmoney.subsidyInfo = this.enterpriseSubsidyInfo
+        updateEnterpriseSubsidy(this.editmoney.id, this.editmoney.subsidyMoney, this.enterpriseSubsidyInfo).then(() => {
           for (const v of this.list) {
             console.log(v.id)
             if (v.id === this.editmoney.id) {
@@ -148,6 +172,7 @@
           }
 
           this.dialogFormVisible = false
+          this.enterpriseSubsidyInfo = null
           this.$notify({
             title: '成功',
             message: '更新成功',

@@ -25,6 +25,7 @@ import Layout from '../views/layout/Layout'
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
+  
 
   {
     path: '/',
@@ -41,23 +42,30 @@ export const constantRouterMap = [
 
 export const asyncRouterMap = [
   {
-    path: '/企业管理',
+    path: '/enterprise',
     component: Layout,
     redirect: '/example/table',
     name: '企业管理',
     meta: { title: '企业管理', icon: 'example' },
     children: [
       {
-        path: '企业列表',
+        path: 'index',
         name: '企业列表',
         component: () => import('@/views/enterprise/index'),
-        meta: { title: '企业列表', icon: 'table',roles:['manager'] }
+        meta: { title: '企业列表', icon: 'table',roles:['admin'] }
       },
       {
         path: 'tree',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
         meta: { title: 'Tree', icon: 'tree', roles: ['admin'] }
+      }, 
+      {
+        path: 'enterpriseEdit',
+        name: 'EnterpriseEdit',
+        component: () => import('@/views/enterprise/edit'),
+        meta: { title: '企业编辑', icon: 'tree', roles: ['admin'] },
+        hidden:true
       }
     ]
   },
@@ -144,7 +152,9 @@ export const asyncRouterMap = [
     ]
   },
 
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
+
+ 
 ]
 
 export default new Router({
