@@ -114,25 +114,25 @@ export const asyncRouterMap = [
         path: 'employeeList',
         name: 'employeeList',
         component: () => import('@/views/employee/index'),
-        meta: { title: '代理列表', icon: 'table',roles:['admin','editor','broker'] }
+        meta: { title: '代理列表', icon: 'table',roles:['admin','editor'] }
       },
       {
         path: 'employeeSignLogList',
         name: 'employeeSignLogList',
         component: () => import('@/views/employee/employeeSignList'),
-        meta: { title: '新增代理', icon: 'tree',roles:['admin','editor','broker'] }
+        meta: { title: '新增代理', icon: 'tree',roles:['admin'] }
       },
       {
         path: 'employeeSignLogList',
         name: 'employeeSignLogList',
         component: () => import('@/views/employee/employeeSignList'),
-        meta: { title: '经纪人列表', icon: 'tree',roles:['admin','editor','broker'] }
+        meta: { title: '经纪人列表', icon: 'tree',roles:['admin','editor'] }
       },
       {
         path: 'employeeSignLogList',
         name: 'employeeSignLogList',
         component: () => import('@/views/employee/employeeSignList'),
-        meta: { title: '新增经纪人', icon: 'tree',roles:['admin','editor','broker'] }
+        meta: { title: '新增经纪人', icon: 'tree',roles:['admin','editor'] }
       }
     ]
   },
@@ -150,13 +150,19 @@ export const asyncRouterMap = [
         path: 'employeeList',
         name: 'employeeList',
         component: () => import('@/views/employee/index'),
-        meta: { title: '代理收益表', icon: 'table',roles:['admin','editor','broker'] }
+        meta: { title: '代理收益表', icon: 'table',roles:['admin'] }
+      },
+      {
+        path: 'employeeList',
+        name: 'employeeList',
+        component: () => import('@/views/employee/index'),
+        meta: { title: '经纪人收益表', icon: 'table',roles:['admin','editor'] }
       },
       {
         path: 'employeeSignLogList',
         name: 'employeeSignLogList',
         component: () => import('@/views/employee/employeeSignList'),
-        meta: { title: '员工提现表', icon: 'tree',roles:['admin','editor','broker'] }
+        meta: { title: '员工提现表', icon: 'tree',roles:['admin'] }
       }
     ]
   },
