@@ -1,17 +1,17 @@
 import request from '@/utils/request'
 
-export function getEmployeeList(role) {
+export function getEmployeeList(params) {
   return request({
-    url: '/enterprise/getAllEnterprise',
+    url: '/employee/getEmployeeList',
     method: 'get',
     params
   })
 }
 
-export function updateEnterpriseSubsidy(id,subsidy_money,subsidy_info) {
+export function updateEmployeeStatus(employeeId,status) {
   return request({
-    url: '/enterprise/updateEnterpriseSubsidy',
+    url: '/employee/updateEmployeeStatus',
     method: 'post',
-    params:{id,subsidy_money,subsidy_info}
+    params:{employeeId,status}
   })
 }

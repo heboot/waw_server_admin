@@ -108,16 +108,15 @@
     filters: {
       statusFilter(status) {
         const statusMap = {
-          0: 'success',
-          1: 'gray',
-          2: 'danger'
+          0: 'gray',
+          1: 'success',
         }
         return statusMap[status]
       },
       statusFilter2(status) {
         const statusMap2 = {
-          0: '正常',
-          1: '关闭'
+          0: '关闭',
+          1: '正常'
         }
         return statusMap2[status]
       }
@@ -164,7 +163,6 @@
           this.list = response.data.list
           this.listLoading = false
           this.total = response.data.totalPage
-          this.$store.dispatch('setLanguage', 'zh')
         })
       },
       toEdit(row) {

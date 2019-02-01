@@ -71,65 +71,92 @@ export const asyncRouterMap = [
         path: 'enterpriseList',
         name: 'EnterpriseList',
         component: () => import('@/views/enterprise/preview'),
-        meta: { title: '企业列表', icon: 'tree', roles: ['editor,broker'] },
+        meta: { title: '企业列表', icon: 'tree', roles: ['editor','broker'] },
         hidden:false
       }
     ]
   },
   {
-    path: '/nested',
+    path: '/employee',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    redirect: '/employee/employeeList',
+    name: 'employee',
     meta: {
-      title: 'Nested',
+      title: '员工管理',
       icon: 'nested'
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: 'employeeList',
+        name: 'employeeList',
+        component: () => import('@/views/employee/index'),
+        meta: { title: '员工列表', icon: 'table',roles:['admin','editor','broker'] }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        path: 'employeeSignLogList',
+        name: 'employeeSignLogList',
+        component: () => import('@/views/employee/employeeSignList'),
+        meta: { title: '签到日志', icon: 'tree',roles:['admin','editor','broker'] }
+      }
+    ]
+  },
+  {
+    path: '/editor',
+    component: Layout,
+    redirect: '/editor/index',
+    name: 'employee',
+    meta: {
+      title: '代理管理',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'employeeList',
+        name: 'employeeList',
+        component: () => import('@/views/employee/index'),
+        meta: { title: '代理列表', icon: 'table',roles:['admin','editor','broker'] }
+      },
+      {
+        path: 'employeeSignLogList',
+        name: 'employeeSignLogList',
+        component: () => import('@/views/employee/employeeSignList'),
+        meta: { title: '新增代理', icon: 'tree',roles:['admin','editor','broker'] }
+      },
+      {
+        path: 'employeeSignLogList',
+        name: 'employeeSignLogList',
+        component: () => import('@/views/employee/employeeSignList'),
+        meta: { title: '经纪人列表', icon: 'tree',roles:['admin','editor','broker'] }
+      },
+      {
+        path: 'employeeSignLogList',
+        name: 'employeeSignLogList',
+        component: () => import('@/views/employee/employeeSignList'),
+        meta: { title: '新增经纪人', icon: 'tree',roles:['admin','editor','broker'] }
+      }
+    ]
+  },
+  {
+    path: '/cash',
+    component: Layout,
+    redirect: '/editor/index',
+    name: 'employee',
+    meta: {
+      title: '财务数据',
+      icon: 'money'
+    },
+    children: [
+      {
+        path: 'employeeList',
+        name: 'employeeList',
+        component: () => import('@/views/employee/index'),
+        meta: { title: '代理收益表', icon: 'table',roles:['admin','editor','broker'] }
+      },
+      {
+        path: 'employeeSignLogList',
+        name: 'employeeSignLogList',
+        component: () => import('@/views/employee/employeeSignList'),
+        meta: { title: '员工提现表', icon: 'tree',roles:['admin','editor','broker'] }
       }
     ]
   },
