@@ -4,18 +4,15 @@
         <div class="filter-container">
             <el-input :placeholder='输入企业名称' v-model="listQuery.title" style="width: 200px;"
                       class="filter-item" @keyup.enter.native="handleFilter"/>
-            <el-select v-model="listQuery.city" :placeholder='城市' clearable
+            <el-select v-model="listQuery.city" :placeholder="城市" clearable
                        style="width: 90px" class="filter-item">
                 <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item"/>
             </el-select>
 
-            <el-button   class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden">
+            <el-button v-waves class="filter-item" type="primary" icon="el-icon-search">
                 搜索
             </el-button>
 
-            <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">
-                创建
-            </el-button>
 
         </div>
 
@@ -54,7 +51,7 @@
                     <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | statusFilter2 }}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column align="center" prop="created_at" label="操作">
+            <!-- <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                     <el-button class="filter-item" type="primary" @click="handleUpdate(scope.row)">设置补贴价格</el-button>
                     <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
@@ -62,7 +59,7 @@
                     </router-link>
 
                 </template>
-            </el-table-column>
+            </el-table-column> -->
 
         </el-table>
 
@@ -100,7 +97,6 @@
 <script>
   import { getEnterpriseList, updateEnterpriseSubsidy } from '@/api/enterprise/enterlist'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-  import store from '@/store'
 
   export default {
     name: 'Enterprise',
@@ -124,7 +120,6 @@
     },
     data() {
       return {
-        rolehidden:'',
         enterpriseSubsidyInfo: '',
         input: '',
         list: null,
@@ -150,14 +145,9 @@
       }
     },
     created() {
-      this.fetchData(),
-      this.checkRole()
+      this.fetchData()
     },
     methods: {
-      checkRole(){
-        console.log( store.user)
-         
-      },
       fetchData() {
         this.listLoading = true
         getEnterpriseList(this.listQuery).then(response => {

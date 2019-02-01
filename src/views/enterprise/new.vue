@@ -157,7 +157,7 @@
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
   export default {
-    name: 'EnterpriseEdit',
+    name: 'EnterpriseNew',
     components: { Pagination },
     filters: {
       statusFilter(status) {
@@ -178,13 +178,14 @@
     },
     data() {
       return {
-        enterprise: this.$route.query.enterprise,
+        enterprise:{
+            
+        },
         activeName: 'enterprise_info'
       }
     },
     created() {
-      this.fetchData()
-      console.log(enterprise)
+      
     },
     methods: {
       fetchData() {

@@ -55,34 +55,27 @@ export const asyncRouterMap = [
         meta: { title: '企业列表', icon: 'table',roles:['admin'] }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree', roles: ['admin'] }
-      }, 
+        path: 'newEnterPrise',
+        name: 'newEnterPrise',
+        component: () => import('@/views/enterprise/new'),
+        meta: { title: '新增企业', icon: 'tree',roles:['admin'] }
+      },
       {
         path: 'enterpriseEdit',
         name: 'EnterpriseEdit',
         component: () => import('@/views/enterprise/edit'),
         meta: { title: '企业编辑', icon: 'tree', roles: ['admin'] },
         hidden:true
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
+      },
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        path: 'enterpriseList',
+        name: 'EnterpriseList',
+        component: () => import('@/views/enterprise/preview'),
+        meta: { title: '企业列表', icon: 'tree', roles: ['editor,broker'] },
+        hidden:false
       }
     ]
   },
-
   {
     path: '/nested',
     component: Layout,
