@@ -15,3 +15,19 @@ export function updateEnterpriseSubsidy(id,subsidy_money,subsidy_info) {
     params:{id,subsidy_money,subsidy_info}
   })
 }
+
+export function updateEnterprise(token,enterprise) {
+  return request({
+    url: '/enterprise/updateEnterprise',
+    method: 'post',
+    params:{token,enterprise}
+  })
+}
+
+export function addEnterprise(token,enterprise) {
+  return request({
+    url: '/enterprise/addEnterprise',
+    method: 'post',
+    params:{token,enterprise}
+  })
+}

@@ -91,7 +91,7 @@
                                @click="handleUpdate(scope.row)">{{ scope.row.status |
                         empolyeeStatusTypeBtnTxtFilter }}
                     </el-button>
-                    <el-button  hidden="true" class="filter-item" type="primary" @click="handleUpdate(scope.row)">{{
+                    <el-button hidden="true" class="filter-item" type="primary" @click="handleUpdate(scope.row)">{{
                         scope.row.jobStatus |
                         empolyeeJobStatusTypeBtnTxtFilter }}
                     </el-button>
@@ -169,7 +169,7 @@
         const jobStatusMap = {
           0: '入职',
           1: '离职',
-          2:'删除'
+          2: '删除'
         }
         return jobStatusMap[status]
       },

@@ -9,13 +9,18 @@
                 <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item"/>
             </el-select>
 
-            <el-button   class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden">
+            <el-button class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden">
                 搜索
             </el-button>
 
-            <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">
-                创建
-            </el-button>
+
+            <router-link :to="{path:'/enterprise/newEnterPrise'}">
+                <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit">
+                    创建
+                </el-button>
+
+            </router-link>
+
 
         </div>
 
@@ -109,7 +114,7 @@
       statusFilter(status) {
         const statusMap = {
           0: 'gray',
-          1: 'success',
+          1: 'success'
         }
         return statusMap[status]
       },
@@ -123,7 +128,7 @@
     },
     data() {
       return {
-        rolehidden:'',
+        rolehidden: '',
         enterpriseSubsidyInfo: '',
         input: '',
         list: null,
@@ -150,12 +155,12 @@
     },
     created() {
       this.fetchData(),
-      this.checkRole()
+        this.checkRole()
     },
     methods: {
-      checkRole(){
-        console.log( store.user)
-         
+      checkRole() {
+        console.log(store.user)
+
       },
       fetchData() {
         this.listLoading = true

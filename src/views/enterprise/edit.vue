@@ -25,7 +25,7 @@
                         <el-input style="" v-model="enterprise.salaryDate"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary">提交</el-button>
+                        <el-button type="primary" @click="submitUpdateEnterprise()">提交</el-button>
                         
                     </el-form-item>
                 </el-form>
@@ -153,9 +153,9 @@
 
 
 <script>
-  import { getEnterpriseList, updateEnterpriseSubsidy } from '@/api/enterprise/enterlist'
+  import {  updateEnterprise } from '@/api/enterprise/enterlist'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
-
+import { getToken} from '@/utils/auth'
   export default {
     name: 'EnterpriseEdit',
     components: { Pagination },
@@ -179,12 +179,12 @@
     data() {
       return {
         enterprise: this.$route.query.enterprise,
-        activeName: 'enterprise_info'
+        activeName: 'enterprise_info',
+        token: getToken()
       }
     },
     created() {
-      this.fetchData()
-      console.log(enterprise)
+    //   console.log(enterprise)
     },
     methods: {
       fetchData() {
@@ -208,21 +208,10 @@
         this.dialogStatus = '设置补贴价格'
         this.dialogFormVisible = true
       },
-      submitUpdateSubsidy() {
-        this.editmoney.subsidyMoney = this.input
-        this.editmoney.subsidyInfo = this.enterpriseSubsidyInfo
-        updateEnterpriseSubsidy(this.editmoney.id, this.editmoney.subsidyMoney, this.enterpriseSubsidyInfo).then(() => {
-          for (const v of this.list) {
-            console.log(v.id)
-            if (v.id === this.editmoney.id) {
-              const index = this.list.indexOf(v)
-              this.list.splice(index, 1, this.editmoney)
-              break
-            }
-          }
-
-          this.dialogFormVisible = false
-          this.enterpriseSubsidyInfo = null
+      submitUpdateEnterprise() {
+        console.log(this.token)
+        updateEnterprise(this.token,this.enterprise).then(() => {
+          
           this.$notify({
             title: '成功',
             message: '更新成功',
