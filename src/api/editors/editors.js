@@ -8,3 +8,11 @@ export function getEditorList(params) {
   })
 }
 
+export function addEditor(token,name,mobile) {
+  return request({
+    url: '/adminuser/addEditor',
+    method: 'post',
+    params:{token,name,mobile}
+  })
+}
+

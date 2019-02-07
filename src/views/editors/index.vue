@@ -42,7 +42,7 @@
             </el-table-column>
             <el-table-column label="创建日期" width="160" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.age }}
+                    {{ scope.row.createTime | formatDate }}
                 </template>
             </el-table-column>
             <el-table-column label="状态" width="110" align="center">
@@ -84,11 +84,15 @@
   import { getEditorList } from '@/api/editors/editors'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
+  import {formata} from '@/utils/date'
 
   export default {
     name: 'EmployeeList',
     components: { Pagination },
     filters: {
+      formatDate: function(time) {
+        return formata(time/1000)
+      },
       empolyeeStatusFilter(status) {
         const jobStatusMap = {
           0: '禁用',

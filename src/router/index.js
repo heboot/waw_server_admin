@@ -117,9 +117,9 @@ export const asyncRouterMap = [
         meta: { title: '代理列表', icon: 'table',roles:['admin','editor'] }
       },
       {
-        path: 'employeeSignLogList',
-        name: 'employeeSignLogList',
-        component: () => import('@/views/employee/employeeSignList'),
+        path: 'newEditor',
+        name: 'newEditor',
+        component: () => import('@/views/editors/new'),
         meta: { title: '新增代理', icon: 'tree',roles:['admin'] }
       },
       {
