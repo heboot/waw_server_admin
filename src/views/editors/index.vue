@@ -2,13 +2,9 @@
     <div class="app-container">
 
         <div class="filter-container">
-            <el-input :placeholder='输入企业名称' v-model="listQuery.title" style="width: 200px;"
+            <el-input placeholder='输入名字或电话' v-model="listQuery.key" style="width: 200px;"
                       class="filter-item" @keyup.enter.native="handleFilter"/>
-            <el-select v-model="listQuery.city" :placeholder='城市' clearable
-                       style="width: 90px" class="filter-item">
-                <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item"/>
-            </el-select>
-
+            
             <el-button class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden">
                 搜索
             </el-button>
@@ -39,31 +35,34 @@
                     {{ scope.row.mobile }}
                 </template>
             </el-table-column>
-            <el-table-column label="签到日期" width="160" align="center">
+            <el-table-column label="创建人" width="160" align="center">
                 <template slot-scope="scope">
                     <span>{{ scope.row.sex | sexFilter }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="来源" width="160" align="center">
+            <el-table-column label="创建日期" width="160" align="center">
                 <template slot-scope="scope">
                     {{ scope.row.age }}
                 </template>
             </el-table-column>
-            <el-table-column label="员工状态" width="110" align="center">
+            <el-table-column label="状态" width="110" align="center">
                 <template slot-scope="scope">
                     <el-tag :type="scope.row.status | empolyeeStatusTypeFilter">{{ scope.row.status |
                         empolyeeStatusFilter }}
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column class-name="status-col" label="渠道" width="100" align="center">
+             <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
-                    <!-- <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | statusFilter2 }}</el-tag> -->
-                </template>
-            </el-table-column>
-            <el-table-column label="经纪人" width="110" align="center">
-                <template slot-scope="scope">
-                    {{ scope.row.pageviews }}
+                    <el-button class="filter-item" :type="scope.row.status | empolyeeStatusTypeBtnFilter"
+                               @click="handleUpdate(scope.row)">{{ scope.row.status |
+                        empolyeeStatusTypeBtnTxtFilter }}
+                    </el-button>
+                  
+                    <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
+                        <el-button type="primary">编辑</el-button>
+                    </router-link>
+
                 </template>
             </el-table-column>
         </el-table>
@@ -75,32 +74,14 @@
                 :limit.sync="listQuery.limit"
                 @pagination="fetchData"/>
 
-        <el-dialog :title="dialogStatus" :visible.sync="dialogFormVisible">
-            <el-form
-                    ref="dataForm"
-                    :model="editmoney"
-                    label-position="left"
-
-                    label-width="70px"
-                    style="width: 400px; margin-left:50px;">
-                <el-form-item>
-                    <el-input v-model="enterpriseSubsidyInfo" placeholder="请输入补贴描述"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-input v-model="input" placeholder="请输入价格"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitUpdateSubsidy()">提交</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
+        
 
     </div>
 
 </template>
 
 <script>
-  import { getEmployeeSignLogList } from '@/api/employee/employee'
+  import { getEditorList } from '@/api/editors/editors'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
 
@@ -202,20 +183,8 @@
         listQuery: {
           page: 1,
           limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id',
-          city: undefined,
-          token: getToken()
-        },
-        dialogStatus: '',
-        dialogFormVisible: false,
-        editmoney: {
-          id: -1,
-          subsidyMoney: 0,
-          subsidyInfo: null,
-          currentMoney: 0
+          token: getToken(),
+          key:null
         }
       }
     },
@@ -225,7 +194,7 @@
     methods: {
       fetchData() {
         this.listLoading = true
-        getEmployeeSignLogList(this.listQuery).then(response => {
+        getEditorList(this.listQuery).then(response => {
           this.list = response.data.list
           this.listLoading = false
           this.total = response.data.totalPage

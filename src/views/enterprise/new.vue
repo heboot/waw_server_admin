@@ -29,7 +29,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="handleAdd()">提交</el-button>
-                       
+
                     </el-form-item>
                 </el-form>
 
@@ -232,21 +232,21 @@
             type: 'error',
             duration: 2000
           })
-        } 
+        }
         else  if (this.enterprise.name == null || this.enterprise.name == '') {
           this.$message({
             message: '企业名称不能为空',
             type: 'error',
             duration: 2000
           })
-        } 
+        }
         else  if (this.enterprise.subsidyMoney == null || this.enterprise.subsidyMoney == '') {
           this.$message({
             message: '企业补贴价格不能为空',
             type: 'error',
             duration: 2000
           })
-        } 
+        }
         else {
           this.submitAddEnterprise()
         }

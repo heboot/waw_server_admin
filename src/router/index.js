@@ -111,9 +111,9 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'employeeList',
-        name: 'employeeList',
-        component: () => import('@/views/employee/index'),
+        path: 'editorList',
+        name: 'editorList',
+        component: () => import('@/views/editors/index'),
         meta: { title: '代理列表', icon: 'table',roles:['admin','editor'] }
       },
       {

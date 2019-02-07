@@ -2,14 +2,14 @@
     <div class="app-container">
 
         <div class="filter-container">
-            <el-input :placeholder='输入企业名称' v-model="listQuery.title" style="width: 200px;"
+            <el-input placeholder='输入员工名字、电话' v-model="listQuery.key" style="width: 300px;"
                       class="filter-item" @keyup.enter.native="handleFilter"/>
-            <el-select v-model="listQuery.city" :placeholder='城市' clearable
+            <!-- <el-select v-model="listQuery.city" :placeholder='城市' clearable
                        style="width: 90px" class="filter-item">
                 <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item"/>
-            </el-select>
+            </el-select> -->
 
-            <el-button class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden">
+            <el-button class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden" @click="fetchData()">
                 搜索
             </el-button>
 
@@ -238,7 +238,9 @@
         listQuery: {
           page: 1,
           limit: 20,
-          token: getToken()
+          token: getToken(),
+          key:'',
+          type:'0'
         },
         dialogStatus: '',
         dialogFormVisible: false,

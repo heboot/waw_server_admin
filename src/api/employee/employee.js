@@ -15,3 +15,11 @@ export function updateEmployeeStatus(employeeId,status) {
     params:{employeeId,status}
   })
 }
+
+export function getEmployeeSignLogList(params) {
+  return request({
+    url: '/employee/getEmployeeSignLogList',
+    method: 'get',
+    params
+  })
+}
