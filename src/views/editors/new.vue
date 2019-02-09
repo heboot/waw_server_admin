@@ -27,10 +27,8 @@
     data() {
       return {
         token: getToken(),
-        editor: {
-          name: null,
-          mobile: null
-        }
+         
+        editor: this.$route.query.user == null?{name:null,mobile:null}:this.$route.query.user,
       }
     },
     created() {
@@ -54,8 +52,9 @@
           this.submitAddEditor()
         }
       },
-      submitAddEditor() {
+      submitAddEditor() {console.log(this.editor)
         addEditor(this.token,this.editor.name,this.editor.mobile).then(() => {
+          
           this.$notify({
             title: '成功',
             message: '创建成功',

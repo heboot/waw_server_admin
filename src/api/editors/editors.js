@@ -16,3 +16,11 @@ export function addEditor(token,name,mobile) {
   })
 }
 
+export function updateEditorStatus(token,uid,status) {
+  return request({
+    url: '/adminuser/updateAdminUserStatus',
+    method: 'post',
+    params:{token,uid,status}
+  })
+}
+

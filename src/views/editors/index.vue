@@ -55,11 +55,11 @@
              <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                     <el-button class="filter-item" :type="scope.row.status | empolyeeStatusTypeBtnFilter"
-                               @click="handleUpdate(scope.row)">{{ scope.row.status |
+                               @click="showEnableDialog(scope.row)">{{ scope.row.status |
                         empolyeeStatusTypeBtnTxtFilter }}
                     </el-button>
                   
-                    <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
+                    <router-link :to="{path:'/editor/newEditor',query:{user:scope.row}}">
                         <el-button type="primary">编辑</el-button>
                     </router-link>
 
@@ -75,23 +75,34 @@
                 @pagination="fetchData"/>
 
         
-
+<el-dialog
+                title="提示"
+                :visible.sync="enableDialogVisible"
+                width="30%"
+                :before-close="handleClose">
+            <span>{{enableTipText}}}</span>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="enableDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="doUserStatusUpdate()">确 定</el-button>
+  </span>
+        </el-dialog>
     </div>
 
 </template>
 
 <script>
-  import { getEditorList } from '@/api/editors/editors'
+  import { getEditorList ,updateEditorStatus} from '@/api/editors/editors'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
   import {formata} from '@/utils/date'
+  import {parseTime,formatTime} from   '@/utils/index'
 
   export default {
     name: 'EmployeeList',
     components: { Pagination },
     filters: {
       formatDate: function(time) {
-        return formata(time/1000)
+        return formatTime(time,false)
       },
       empolyeeStatusFilter(status) {
         const jobStatusMap = {
@@ -114,59 +125,13 @@
         }
         return jobStatusMap[status]
       },
-      empolyeeJobStatusTypeBtnTxtFilter(status) {
-        const jobStatusMap = {
-          0: '入职',
-          1: '离职',
-          2:'删除'
-        }
-        return jobStatusMap[status]
-      },
+      
       empolyeeStatusTypeFilter(status) {
         const jobStatusMap = {
           0: 'danger',
           1: 'success'
         }
         return jobStatusMap[status]
-      },
-      statusJobFilter(status) {
-        const jobStatusMap = {
-          0: '已报名',
-          1: '工作中',
-          2: '离职'
-        }
-        return jobStatusMap[status]
-      },
-      statusJobTypeFilter(status) {
-        const jobStatusMap = {
-          0: '',
-          1: 'success',
-          2: 'danger'
-        }
-        return jobStatusMap[status]
-      },
-      sexFilter(status) {
-        const cashTypeMap = {
-          0: '女',
-          1: '男'
-        }
-        return cashTypeMap[status]
-      },
-      statusCashTypeFilter(status) {
-        const cashTypeMap = {
-          0: 'danger',
-          1: 'success',
-          2: 'info'
-        }
-        return cashTypeMap[status]
-      },
-      statusCashFilter(status) {
-        const cashTypeMap = {
-          0: '不可提现',
-          1: '可提现',
-          2: '已经提现'
-        }
-        return cashTypeMap[status]
       },
       statusFilter2(status) {
         const statusMap2 = {
@@ -189,13 +154,56 @@
           limit: 20,
           token: getToken(),
           key:null
-        }
+        },
+        token: getToken(),
+        enableTipText:'',
+        enableDialogVisible:false,
+        editUser:null
       }
     },
     created() {
       this.fetchData()
     },
     methods: {
+      showEnableDialog(row){
+          this.editUser = row
+          if(this.editUser.status == 1){
+              this.enableTipText = '你确定要禁用该用户吗?'
+          }else{
+               this.enableTipText = '你确定要启用该用户吗?'
+          }
+           this.enableDialogVisible = true
+      },
+      doUserStatusUpdate(){
+          var status = undefined
+          if(this.editUser.status == 1){
+            status = 0
+          }else{
+            status = 1
+          }
+          updateEditorStatus(this.token, this.editUser.id, status).then(response => {
+          this.editUser.status = status
+          for (const v of this.list) {
+            console.log(v.id)
+            if (v.id === this.editUser.id) {
+              const index = this.list.indexOf(v)
+              this.list.splice(index, 1, this.editUser)
+              break
+            }
+          }
+           
+            this.enableDialogVisible = false
+          
+
+          this.editUser = null
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        })
+      },
       fetchData() {
         this.listLoading = true
         getEditorList(this.listQuery).then(response => {
