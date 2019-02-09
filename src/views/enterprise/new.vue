@@ -9,6 +9,25 @@
                     <!-- <el-form-item  label="综合薪资">
                        <el-input  v-model="enterprise.salary"></el-input>
                    </el-form-item> -->
+                    <el-form-item label="企业图片">
+                        <div id="app">
+                            <a class="btn" @click="toggleShow">点我上传图片</a>
+                            <my-upload field="img"
+                                       @crop-success="cropSuccess"
+                                       @crop-upload-success="cropUploadSuccess"
+                                       @crop-upload-fail="cropUploadFail"
+                                       v-model="show"
+                                       :width="300"
+                                       :height="300"
+                                       :url="uploadUrl"
+                                       :params="params"
+                                       :headers="headers"
+                                       img-format="png"></my-upload>
+                            <img :src="imgDataUrl">
+                        </div>
+                    </el-form-item>
+
+
                     <el-form-item label="补贴报价">
                         <el-input v-model="enterprise.subsidyMoney"></el-input>
                     </el-form-item>
@@ -159,10 +178,13 @@
   import { getToken } from '@/utils/auth'
   import { addEnterprise } from '@/api/enterprise/enterlist'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+  import myUpload from 'vue-image-crop-upload'
+  import * as qiniu from 'qiniu-js'
+  import {getUploadEnterpriseImageToken} from '@/api/upload/upload'
 
   export default {
     name: 'EnterpriseNew',
-    components: { Pagination },
+    components: { Pagination, 'my-upload': myUpload },
     filters: {
       statusFilter(status) {
         const statusMap = {
@@ -215,10 +237,24 @@
           employClearGarment: '看部门',
           employPhysical: '需要',
           employForeign: '不查',
-          gmtCreate: undefined
+          gmtCreate: undefined,
+          icon:''
         },
         activeName: 'enterprise_info',
-        token: getToken()
+        token: getToken(),
+        src: 'http://img1.vued.vanthink.cn/vued0a233185b6027244f9d43e653227439a.png',
+        show: false,
+			params: {
+				token: '123456798',
+				name: 'avatar'
+			},
+			headers: {
+				smail: '*_~'
+			},
+            imgDataUrl: '', // the datebase64 url of created image,
+            uploadUrl:null,
+            uploadToken:null,
+           
       }
     },
     created() {
@@ -232,22 +268,19 @@
             type: 'error',
             duration: 2000
           })
-        }
-        else  if (this.enterprise.name == null || this.enterprise.name == '') {
+        } else if (this.enterprise.name == null || this.enterprise.name == '') {
           this.$message({
             message: '企业名称不能为空',
             type: 'error',
             duration: 2000
           })
-        }
-        else  if (this.enterprise.subsidyMoney == null || this.enterprise.subsidyMoney == '') {
+        } else if (this.enterprise.subsidyMoney == null || this.enterprise.subsidyMoney == '') {
           this.$message({
             message: '企业补贴价格不能为空',
             type: 'error',
             duration: 2000
           })
-        }
-        else {
+        } else {
           this.submitAddEnterprise()
         }
       },
@@ -261,7 +294,90 @@
             duration: 2000
           })
         })
-      }
+      },
+      getUploadToken(){
+          getUploadEnterpriseImageToken(this.token).then(response => {
+              this.uploadToken = response.data
+              this.doUploadQiniu(this.uploadToken)
+        })
+      },
+      doUploadQiniu(res){
+       console.log(res)
+          this.showProgress = true
+          const fileName = new Date().getTime()+ ""
+          const suffix = fileName.substring(fileName.lastIndexOf('.')) // 后缀名
+          const prefix = "image/enterprise/"
+          const key = prefix + "image"+ suffix // 上传文件名
+          const token = res
+          const observer = {
+            next: response => {
+              // 上传进度'+Math.floor(response.total.percent)+'%'
+              this.uploadProgress = Math.floor(response.total.percent)
+            },
+            error: err => {
+              // 失败
+              this.$message.error('上传失败' + err.message)
+              console.log(err)
+            },
+            complete: response => {
+               console.log(response)
+               this.enterprise.icon = "image/enterprise/" + response.key
+            }
+          }
+          const putExtra = {
+            fname: '',
+            params: {},
+            mimeType: null
+            // mimeType: ['image/png', 'image/jpeg', 'image/gif']
+          }
+          const config = {}
+          const observable = qiniu.upload(this.dataURLtoFile(this.imgDataUrl,"hahaha111"), key, token, putExtra, config)
+          observable.subscribe(observer) // 上传开始
+      },
+        dataURLtoFile(dataurl, filename) {//将base64转换为文件
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, {type:mime});
+    },
+      toggleShow() {
+				this.show = !this.show;
+			},
+            /**
+			 * crop success
+			 *
+			 * [param] imgDataUrl
+			 * [param] field
+			 */
+			cropSuccess(imgDataUrl, field){
+				console.log('-------- crop success --------' + imgDataUrl );
+                this.imgDataUrl = imgDataUrl;
+                this.getUploadToken()
+			},
+			/**
+			 * upload success
+			 *
+			 * [param] jsonData   服务器返回数据，已进行json转码
+			 * [param] field
+			 */
+			cropUploadSuccess(jsonData, field){
+				console.log('-------- upload success --------');
+				console.log(jsonData);
+				console.log('field: ' + field);
+			},
+			/**
+			 * upload fail
+			 *
+			 * [param] status    server api return error status, like 500
+			 * [param] field
+			 */
+			cropUploadFail(status, field){
+				console.log('-------- upload fail --------');
+				console.log(status);
+				console.log('field: ' + field);
+			}
     }
   }
 

@@ -35,7 +35,8 @@ export const constantRouterMap = [
     hidden: true,
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: '首页'}
     }]
   }
 ]
@@ -123,15 +124,15 @@ export const asyncRouterMap = [
         meta: { title: '新增代理', icon: 'tree',roles:['admin'] }
       },
       {
-        path: 'employeeSignLogList',
-        name: 'employeeSignLogList',
-        component: () => import('@/views/employee/employeeSignList'),
+        path: 'brokerList',
+        name: 'brokerList',
+        component: () => import('@/views/broker/index'),
         meta: { title: '经纪人列表', icon: 'tree',roles:['admin','editor'] }
       },
       {
-        path: 'employeeSignLogList',
-        name: 'employeeSignLogList',
-        component: () => import('@/views/employee/employeeSignList'),
+        path: 'addBroker',
+        name: 'addBroker',
+        component: () => import('@/views/broker/new'),
         meta: { title: '新增经纪人', icon: 'tree',roles:['admin','editor'] }
       }
     ]
