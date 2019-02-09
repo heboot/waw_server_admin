@@ -9,7 +9,8 @@
                 <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item"/>
             </el-select> -->
 
-            <el-button class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden" @click="fetchData()">
+            <el-button class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden"
+                       @click="fetchData()">
                 搜索
             </el-button>
 
@@ -56,11 +57,7 @@
                     </el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="签到天数" width="110" align="center">
-                <template slot-scope="scope">
-                    <span>3天</span>
-                </template>
-            </el-table-column>
+
             <el-table-column label="提现状态" width="110" align="center">
                 <template slot-scope="scope">
                     <el-tag :type="scope.row.cashStatus | statusCashTypeFilter">{{ scope.row.cashStatus |
@@ -77,27 +74,27 @@
             </el-table-column>
             <el-table-column class-name="status-col" label="渠道" width="100" align="center">
                 <template slot-scope="scope">
-                    <!-- <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | statusFilter2 }}</el-tag> -->
+                    {{ scope.row.parentUser==null?'无':scope.row.parentUser.name }}
                 </template>
             </el-table-column>
             <el-table-column label="经纪人" width="110" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.pageviews }}
+                    {{ scope.row.brokerUser==null?'无':scope.row.brokerUser.name }}
                 </template>
             </el-table-column>
             <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                     <el-button class="filter-item" :type="scope.row.status | empolyeeStatusTypeBtnFilter"
-                               @click="handleUpdate(scope.row)">{{ scope.row.status |
+                               @click="showEnableDialog(scope.row )">{{ scope.row.status |
                         empolyeeStatusTypeBtnTxtFilter }}
                     </el-button>
-                    <el-button hidden="true" class="filter-item" type="primary" @click="handleUpdate(scope.row)">{{
+                    <el-button hidden="true" class="filter-item" type="primary" @click="showJobStatusDialog(scope.row)">{{
                         scope.row.jobStatus |
                         empolyeeJobStatusTypeBtnTxtFilter }}
                     </el-button>
-                    <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
+                    <!-- <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
                         <el-button type="primary">签到日志</el-button>
-                    </router-link>
+                    </router-link> -->
 
                 </template>
             </el-table-column>
@@ -131,12 +128,49 @@
             </el-form>
         </el-dialog>
 
+        <el-dialog
+                title="提示"
+                :visible.sync="enabledialogVisible"
+                width="30%"
+                :before-close="handleClose">
+            <span>确定要启用该员工吗</span>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="enabledialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="doupdateEmployeeStatus(1)">确 定</el-button>
+  </span>
+        </el-dialog>
+
+        <el-dialog
+                title="提示"
+                :visible.sync="disabledialogVisible"
+                width="30%"
+                :before-close="handleClose">
+            <span>确定要禁用该员工吗，禁用后该员工将无法登录系统</span>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="disabledialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="doupdateEmployeeStatus(0)">确 定</el-button>
+  </span>
+        </el-dialog>
+
+        <el-dialog
+                title="提示"
+                :visible.sync="jobStatusDialogVisible"
+                width="30%"
+                :before-close="handleClose">
+            <span>{{jobDialogTipText}}</span>
+            <span slot="footer" class="dialog-footer">
+    <el-button @click="jobStatusDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="doupdateEmployeeJobStatus()">确 定</el-button>
+  </span>
+        </el-dialog>
+
+
     </div>
 
 </template>
 
 <script>
-  import { getEmployeeList, updateEmployeeStatus } from '@/api/employee/employee'
+  import { getEmployeeList,updateEmployeeJobStatus, updateEmployeeStatus } from '@/api/employee/employee'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
 
@@ -236,12 +270,13 @@
         total: 0,
         listLoading: true,
         listQuery: {
+          token: getToken(),
           page: 1,
           limit: 20,
-          token: getToken(),
-          key:'',
-          type:'0'
+          key: '',
+          type: '0'
         },
+        token: getToken(),
         dialogStatus: '',
         dialogFormVisible: false,
         editmoney: {
@@ -249,7 +284,12 @@
           subsidyMoney: 0,
           subsidyInfo: null,
           currentMoney: 0
-        }
+        },
+        enabledialogVisible: false,//启用弹框
+        disabledialogVisible: false,//禁用弹框
+        jobStatusDialogVisible:false,
+        jobDialogTipText:'',
+                editEmployee: null
       }
     },
     created() {
@@ -262,6 +302,83 @@
           this.list = response.data.list
           this.listLoading = false
           this.total = response.data.totalPage
+        })
+      },
+      showEnableDialog(employee) {
+        this.editEmployee = employee
+        if (employee.status == 0) {
+          this.enabledialogVisible = true
+        } else {
+          this.disabledialogVisible = true
+        }
+      },
+      showJobStatusDialog(employee){
+        this.editEmployee = employee
+          if(employee.jobStatus == 0){
+              this.jobDialogTipText = '确定将员工状态改为入职吗?'
+          }else if(employee.jobStatus == 1){
+              this.jobDialogTipText = '确定将员工状态改为离职吗?'
+          }else if(employee.jobStatus == 2){
+             
+          }
+          this.jobStatusDialogVisible = true
+      },
+      doupdateEmployeeJobStatus(){
+        var status = undefined
+        if(this.editEmployee.jobStatus == 0){
+            status = 1
+        }else if(this.editEmployee.jobStatus ==1){
+            status  = 2
+        }else{
+          return
+        }
+        updateEmployeeJobStatus(this.token, this.editEmployee.id, status).then(response => {
+          this.editEmployee.jobStatus = status
+          for (const v of this.list) {
+            console.log(v.id)
+            if (v.id === this.editEmployee.id) {
+              const index = this.list.indexOf(v)
+              this.list.splice(index, 1, this.editEmployee)
+              break
+            }
+          }
+           
+            this.jobStatusDialogVisible = false
+          
+
+          this.editEmployee = null
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        })
+      },
+      doupdateEmployeeStatus(status) {
+        updateEmployeeStatus(this.token, this.editEmployee.id, status).then(response => {
+          this.editEmployee.status = status
+          for (const v of this.list) {
+            console.log(v.id)
+            if (v.id === this.editEmployee.id) {
+              const index = this.list.indexOf(v)
+              this.list.splice(index, 1, this.editEmployee)
+              break
+            }
+          }
+          if (status == 1) {
+            this.enabledialogVisible = false
+          } else {
+            this.disabledialogVisible = false
+          }
+
+          this.editEmployee = null
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
         })
       },
       toEdit(row) {

@@ -8,11 +8,19 @@ export function getEmployeeList(params) {
   })
 }
 
-export function updateEmployeeStatus(employeeId,status) {
+export function updateEmployeeStatus(token,employeeId,status) {
   return request({
     url: '/employee/updateEmployeeStatus',
     method: 'post',
-    params:{employeeId,status}
+    params:{token,employeeId,status}
+  })
+}
+
+export function updateEmployeeJobStatus(token,employeeId,status) {
+  return request({
+    url: '/employee/updateEmployeeJobStatus',
+    method: 'post',
+    params:{token,employeeId,status}
   })
 }
 
