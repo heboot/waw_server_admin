@@ -8,6 +8,15 @@ export function getEmployeeList(params) {
   })
 }
 
+export function getEmployeeIdCardList(params) {
+  return request({
+    url: '/adminuser/idCardList',
+    method: 'post',
+    params
+  })
+}
+
+
 export function updateEmployeeStatus(token,employeeId,status) {
   return request({
     url: '/employee/updateEmployeeStatus',

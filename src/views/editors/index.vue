@@ -5,7 +5,7 @@
             <el-input placeholder='输入名字或电话' v-model="listQuery.key" style="width: 200px;"
                       class="filter-item" @keyup.enter.native="handleFilter"/>
             
-            <el-button class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden">
+            <el-button  @click="fetchData()"  class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden">
                 搜索
             </el-button>
 

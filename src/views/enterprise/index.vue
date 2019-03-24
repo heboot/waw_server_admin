@@ -2,14 +2,14 @@
     <div class="app-container">
 
         <div class="filter-container">
-            <el-input :placeholder='输入企业名称' v-model="listQuery.title" style="width: 200px;"
+            <el-input :placeholder="入企业名称" v-model="listQuery.key" style="width: 200px;"
                       class="filter-item" @keyup.enter.native="handleFilter"/>
-            <el-select v-model="listQuery.city" :placeholder='城市' clearable
+            <!-- <el-select v-model="listQuery.city" :placeholder='城市' clearable
                        style="width: 90px" class="filter-item">
                 <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item"/>
-            </el-select>
+            </el-select> -->
 
-            <el-button class="filter-item" type="primary" icon="el-icon-search" hidden="rolehidden">
+            <el-button @click="fetchData()" class="filter-item"  type="primary" icon="el-icon-search" hidden="rolehidden">
                 搜索
             </el-button>
 
@@ -74,8 +74,8 @@
         <pagination
                 v-show="total>0"
                 :total="total"
-                :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
+                :page.sync="listQuery.sp"
+                :limit.sync="listQuery.pageSize"
                 @pagination="fetchData"/>
 
         <el-dialog :title="dialogStatus" :visible.sync="dialogFormVisible">
@@ -135,13 +135,10 @@
         total: 0,
         listLoading: true,
         listQuery: {
-          page: 1,
-          limit: 20,
-          importance: undefined,
-          title: undefined,
-          type: undefined,
-          sort: '+id',
-          city: undefined
+          sp: 1,
+          pageSize: 20,
+          city: undefined,
+          key:''
         },
         dialogStatus: '',
         dialogFormVisible: false,
@@ -167,7 +164,7 @@
         getEnterpriseList(this.listQuery).then(response => {
           this.list = response.data.list
           this.listLoading = false
-          this.total = response.data.totalPage
+          this.total = response.data.total
         })
       },
       toEdit(row) {

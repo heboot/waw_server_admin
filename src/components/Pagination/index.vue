@@ -23,7 +23,7 @@ export default {
       required: true,
       type: Number
     },
-    page: {
+    sp: {
       type: Number,
       default: 1
     },

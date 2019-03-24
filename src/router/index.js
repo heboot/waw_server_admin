@@ -102,6 +102,30 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/mauth',
+    component: Layout,
+    redirect: '/auth/employeeIdCardList',
+    name: 'employee',
+    meta: {
+      title: '认证管理',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'employeeIdCardList',
+        name: 'employeeIdCardList',
+        component: () => import('@/views/mauth/employeeIdCardList'),
+        meta: { title: '身份证认证', icon: 'table',roles:['admin'] }
+      },
+      {
+        path: 'employeeSignLogList',
+        name: 'employeeSignLogList',
+        component: () => import('@/views/employee/employeeSignList'),
+        meta: { title: '银行卡认证', icon: 'tree',roles:['admin'] }
+      }
+    ]
+  },
+  {
     path: '/editor',
     component: Layout,
     redirect: '/editor/index',
@@ -137,45 +161,49 @@ export const asyncRouterMap = [
       }
     ]
   },
+  // {
+  //   path: '/cash',
+  //   component: Layout,
+  //   redirect: '/editor/index',
+  //   name: 'employee',
+  //   meta: {
+  //     title: '财务数据',
+  //     icon: 'money'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'employeeList',
+  //       name: 'employeeList',
+  //       component: () => import('@/views/employee/index'),
+  //       meta: { title: '代理收益表', icon: 'table',roles:['admin'] }
+  //     },
+  //     {
+  //       path: 'employeeList',
+  //       name: 'employeeList',
+  //       component: () => import('@/views/employee/index'),
+  //       meta: { title: '经纪人收益表', icon: 'table',roles:['admin','editor'] }
+  //     },
+  //     {
+  //       path: 'employeeSignLogList',
+  //       name: 'employeeSignLogList',
+  //       component: () => import('@/views/employee/employeeSignList'),
+  //       meta: { title: '员工提现表', icon: 'tree',roles:['admin'] }
+  //     }
+  //   ]
+  // },
+
   {
-    path: '/cash',
+    path: '工具',
     component: Layout,
-    redirect: '/editor/index',
-    name: 'employee',
-    meta: {
-      title: '财务数据',
-      icon: 'money'
+        meta: {
+      title: '工具',
+      icon: 'nested'
     },
     children: [
       {
-        path: 'employeeList',
-        name: 'employeeList',
-        component: () => import('@/views/employee/index'),
-        meta: { title: '代理收益表', icon: 'table',roles:['admin'] }
+        path: 'http://api.map.baidu.com/lbsapi/getpoint/index.html',
+        meta: { title: '经纬度拾取', icon: 'link' }
       },
-      {
-        path: 'employeeList',
-        name: 'employeeList',
-        component: () => import('@/views/employee/index'),
-        meta: { title: '经纪人收益表', icon: 'table',roles:['admin','editor'] }
-      },
-      {
-        path: 'employeeSignLogList',
-        name: 'employeeSignLogList',
-        component: () => import('@/views/employee/employeeSignList'),
-        meta: { title: '员工提现表', icon: 'tree',roles:['admin'] }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
     ]
   },
 

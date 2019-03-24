@@ -105,7 +105,7 @@
                 v-show="total>0"
                 :total="total"
                 :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
+                :limit.sync="listQuery.pageSize"
                 @pagination="fetchData"/>
 
         <el-dialog :title="dialogStatus" :visible.sync="dialogFormVisible">
@@ -272,7 +272,7 @@
         listQuery: {
           token: getToken(),
           page: 1,
-          limit: 20,
+          pageSize: 20,
           key: '',
           type: '0'
         },
@@ -301,7 +301,7 @@
         getEmployeeList(this.listQuery).then(response => {
           this.list = response.data.list
           this.listLoading = false
-          this.total = response.data.totalPage
+          this.total = response.data.total
         })
       },
       showEnableDialog(employee) {

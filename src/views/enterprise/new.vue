@@ -9,7 +9,7 @@
                     <!-- <el-form-item  label="综合薪资">
                        <el-input  v-model="enterprise.salary"></el-input>
                    </el-form-item> -->
-                    <el-form-item label="企业图片">
+                    <!-- <el-form-item label="企业图片">
                         <div id="app">
                             <a class="btn" @click="toggleShow">点我上传图片</a>
                             <my-upload field="img"
@@ -25,7 +25,7 @@
                                        img-format="png"></my-upload>
                             <img :src="imgDataUrl">
                         </div>
-                    </el-form-item>
+                    </el-form-item> -->
 
 
                     <el-form-item label="补贴报价">
