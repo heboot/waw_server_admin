@@ -8,6 +8,14 @@ export function getEditorList(params) {
   })
 }
 
+export function getShopList(params) {
+  return request({
+    url: '/shop/getShopList',
+    method: 'post',
+    params
+  })
+}
+
 export function addEditor(token,name,mobile) {
   return request({
     url: '/adminuser/addEditor',

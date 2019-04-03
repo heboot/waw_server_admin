@@ -93,11 +93,17 @@ export const asyncRouterMap = [
         component: () => import('@/views/employee/index'),
         meta: { title: '员工列表', icon: 'table',roles:['admin','editor','broker'] }
       },
+      // {
+      //   path: 'employeeSignLogList',
+      //   name: 'employeeSignLogList',
+      //   component: () => import('@/views/employee/employeeSignList'),
+      //   meta: { title: '签到日志', icon: 'tree',roles:['admin','editor','broker'] }
+      // },
       {
-        path: 'employeeSignLogList',
-        name: 'employeeSignLogList',
-        component: () => import('@/views/employee/employeeSignList'),
-        meta: { title: '签到日志', icon: 'tree',roles:['admin','editor','broker'] }
+        path: 'employeeJoinList',
+        name: 'employeeJoinList',
+        component: () => import('@/views/employee/employeeJoinList'),
+        meta: { title: '报名列表', icon: 'tree',roles:['admin','editor','broker'] }
       }
     ]
   },
@@ -118,9 +124,9 @@ export const asyncRouterMap = [
         meta: { title: '身份证认证', icon: 'table',roles:['admin'] }
       },
       {
-        path: 'employeeSignLogList',
-        name: 'employeeSignLogList',
-        component: () => import('@/views/employee/employeeSignList'),
+        path: 'employeeBankCardList',
+        name: 'employeeBankCardList',
+        component: () => import('@/views/mauth/employeeBankCardList'),
         meta: { title: '银行卡认证', icon: 'tree',roles:['admin'] }
       }
     ]
@@ -135,6 +141,18 @@ export const asyncRouterMap = [
       icon: 'nested'
     },
     children: [
+      {
+        path: 'shopList',
+        name: 'editorList',
+        component: () => import('@/views/editors/shopList'),
+        meta: { title: '门店列表', icon: 'table',roles:['admin','editor'] }
+      },
+      {
+        path: 'newShop',
+        name: 'newShop',
+        component: () => import('@/views/editors/newShop'),
+        meta: { title: '新增门店', icon: 'tree',roles:['admin'] }
+      },
       {
         path: 'editorList',
         name: 'editorList',
@@ -161,37 +179,36 @@ export const asyncRouterMap = [
       }
     ]
   },
-  // {
-  //   path: '/cash',
-  //   component: Layout,
-  //   redirect: '/editor/index',
-  //   name: 'employee',
-  //   meta: {
-  //     title: '财务数据',
-  //     icon: 'money'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'employeeList',
-  //       name: 'employeeList',
-  //       component: () => import('@/views/employee/index'),
-  //       meta: { title: '代理收益表', icon: 'table',roles:['admin'] }
-  //     },
-  //     {
-  //       path: 'employeeList',
-  //       name: 'employeeList',
-  //       component: () => import('@/views/employee/index'),
-  //       meta: { title: '经纪人收益表', icon: 'table',roles:['admin','editor'] }
-  //     },
-  //     {
-  //       path: 'employeeSignLogList',
-  //       name: 'employeeSignLogList',
-  //       component: () => import('@/views/employee/employeeSignList'),
-  //       meta: { title: '员工提现表', icon: 'tree',roles:['admin'] }
-  //     }
-  //   ]
-  // },
-
+  {
+    path: '/cash',
+    component: Layout,
+    redirect: '/cashdata/index',
+    name: 'cash',
+    meta: {
+      title: '财务数据',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'employeeList',
+        name: 'employeeList',
+        component: () => import('@/views/employee/index'),
+        meta: { title: '代理收益表', icon: 'table',roles:['admin'] }
+      },
+      {
+        path: 'employeeList',
+        name: 'employeeList',
+        component: () => import('@/views/employee/index'),
+        meta: { title: '经纪人收益表', icon: 'table',roles:['admin','editor'] }
+      },
+      {
+        path: 'employeeSignLogList',
+        name: 'employeeSignLogList',
+        component: () => import('@/views/employee/employeeSignList'),
+        meta: { title: '员工提现表', icon: 'tree',roles:['admin'] }
+      }
+    ]
+  },
   {
     path: '工具',
     component: Layout,

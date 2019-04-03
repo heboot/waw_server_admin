@@ -8,9 +8,25 @@ export function getEmployeeList(params) {
   })
 }
 
+export function getEmployeeApplyList(params) {
+  return request({
+    url: '/employee/getEmployeeApplyList',
+    method: 'post',
+    params
+  })
+}
+
 export function getEmployeeIdCardList(params) {
   return request({
     url: '/adminuser/idCardList',
+    method: 'post',
+    params
+  })
+}
+
+export function getEmployeeBankCardList(params) {
+  return request({
+    url: '/employee/employeeBankList',
     method: 'post',
     params
   })
@@ -24,6 +40,23 @@ export function updateEmployeeStatus(token,employeeId,status) {
     params:{token,employeeId,status}
   })
 }
+
+export function updateEmployeeIDCardStatus(token,uid,status) {
+  return request({
+    url: '/employee/updateEmployeeIDCardStatus',
+    method: 'post',
+    params:{token,uid,status}
+  })
+}
+
+export function updateEmployeeBankStatus(token,uid,status) {
+  return request({
+    url: '/employee/updateEmployeeBankStatus',
+    method: 'post',
+    params:{token,uid,status}
+  })
+}
+
 
 export function updateEmployeeJobStatus(token,employeeId,status) {
   return request({

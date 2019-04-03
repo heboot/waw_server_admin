@@ -49,9 +49,9 @@
                     <span>{{  scope.row.subsidyMoney }}元</span>
                 </template>
             </el-table-column>
-            <el-table-column label="报名人数" width="110" align="center">
+            <el-table-column label="打包价格" width="110" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.pageviews }}
+                    {{ scope.row.packageMoney==null || scope.row.packageMoney==0 ?"500元": scope.row.packageMoney+"元" }}
                 </template>
             </el-table-column>
             <el-table-column class-name="status-col" label="状态" width="100" align="center">
@@ -62,6 +62,7 @@
             <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                     <el-button class="filter-item" type="primary" @click="handleUpdate(scope.row)">设置补贴价格</el-button>
+                    <el-button class="filter-item" type="primary" @click="handlePackageUpdate(scope.row)">设置打包价格</el-button>
                     <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
                         <el-button type="primary">编辑</el-button>
                     </router-link>
@@ -98,12 +99,30 @@
             </el-form>
         </el-dialog>
 
+        <el-dialog :title="dialogStatus" :visible.sync="dialogFormVisiblePackage">
+            <el-form
+                    ref="dataForm"
+                    :model="editmoney"
+                    label-position="left"
+
+                    label-width="70px"
+                    style="width: 400px; margin-left:50px;">
+                 
+                <el-form-item>
+                    <el-input v-model="editPackageMoeny" placeholder="请输入打包价格"/>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitUpdatePackageMoeny()">提交</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+
     </div>
 
 </template>
 
 <script>
-  import { getEnterpriseList, updateEnterpriseSubsidy } from '@/api/enterprise/enterlist'
+  import { updateEnterprisePackageMoeny,getEnterpriseList, updateEnterpriseSubsidy } from '@/api/enterprise/enterlist'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import store from '@/store'
 
@@ -140,13 +159,16 @@
           city: undefined,
           key:''
         },
+        editPackageMoeny:'',
         dialogStatus: '',
         dialogFormVisible: false,
+        dialogFormVisiblePackage: false,
         editmoney: {
           id: -1,
           subsidyMoney: 0,
           subsidyInfo: null,
-          currentMoney: 0
+          currentMoney: 0,
+          packageMoney:0,
         }
       }
     },
@@ -186,6 +208,35 @@
         this.editmoney = Object.assign({}, row)
         this.dialogStatus = '设置补贴价格'
         this.dialogFormVisible = true
+      },
+      handlePackageUpdate(row) {
+        this.enterpriseSubsidyInfo = row.subsidyInfo
+        this.input = row.packageMoney
+        this.editmoney = Object.assign({}, row)
+        this.dialogStatus = '设置打包价格'
+        this.dialogFormVisiblePackage = true
+      },
+      submitUpdatePackageMoeny() {
+         this.editmoney.packageMoney = this.editPackageMoeny
+        updateEnterprisePackageMoeny(this.editmoney.id, this.editPackageMoeny).then(() => {
+          for (const v of this.list) {
+            console.log(v.id)
+            if (v.id === this.editmoney.id) {
+              const index = this.list.indexOf(v)
+              this.list.splice(index, 1, this.editmoney)
+              break
+            }
+          }
+
+          this.dialogFormVisiblePackage = false
+          this.enterpriseSubsidyInfo = null
+          this.$notify({
+            title: '成功',
+            message: '更新成功',
+            type: 'success',
+            duration: 2000
+          })
+        })
       },
       submitUpdateSubsidy() {
         this.editmoney.subsidyMoney = this.input

@@ -16,6 +16,14 @@ export function updateEnterpriseSubsidy(id,subsidy_money,subsidy_info) {
   })
 }
 
+export function updateEnterprisePackageMoeny(id,money) {
+  return request({
+    url: '/enterprise/updateEnterprisePackageMoney',
+    method: 'post',
+    params:{id,money}
+  })
+}
+
 export function updateEnterprise(token,enterprise) {
   return request({
     url: '/enterprise/updateEnterprise',

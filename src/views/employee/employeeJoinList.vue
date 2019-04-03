@@ -32,57 +32,52 @@
             </el-table-column>
             <el-table-column label="名字" width="150">
                 <template slot-scope="scope">
-                    {{ scope.row.name }}
+                    {{ scope.row.employeeModel.name==null?"":scope.row.employeeModel.name}}
                 </template>
             </el-table-column>
             <el-table-column label="电话" width="150">
                 <template slot-scope="scope">
-                    {{ scope.row.mobile }}
+                    {{ scope.row.employeeModel.mobile }}
                 </template>
             </el-table-column>
             <el-table-column label="性别" width="60" align="center">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.sex | sexFilter }}</span>
+                    <span>{{ scope.row.employeeModel.sex | sexFilter }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="年龄" width="60" align="center">
+            
+            <el-table-column label="报名职位" width="140" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.age }}
+                    <span>{{ scope.row.enterprise == null?"":(scope.row.enterprise.name==null?"":scope.row.enterprise.name)}}</span>
                 </template>
             </el-table-column>
+
+            <el-table-column label="报名时间" width="150" align="center">
+                <template slot-scope="scope">
+                      <span>{{ scope.row.applyTime }}</span>
+                </template>
+            </el-table-column>
+
             <el-table-column label="工作状态" width="110" align="center">
                 <template slot-scope="scope">
-                    <el-tag :type="scope.row.jobStatus | statusJobTypeFilter">{{ scope.row.jobStatus | statusJobFilter
+                    <el-tag :type="scope.row.employeeModel.jobStatus | statusJobTypeFilter">{{ scope.row.employeeModel.jobStatus | statusJobFilter
                         }}
                     </el-tag>
                 </template>
             </el-table-column>
 
-            <el-table-column label="提现状态" width="110" align="center">
-                <template slot-scope="scope">
-                    <el-tag :type="scope.row.cashStatus | statusCashTypeFilter">{{ scope.row.cashStatus |
-                        statusCashFilter }}
-                    </el-tag>
-                </template>
-            </el-table-column>
-            <el-table-column label="员工状态" width="110" align="center">
-                <template slot-scope="scope">
-                    <el-tag :type="scope.row.status | empolyeeStatusTypeFilter">{{ scope.row.status |
-                        empolyeeStatusFilter }}
-                    </el-tag>
-                </template>
-            </el-table-column>
+
             <el-table-column class-name="status-col" label="渠道" width="100" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.parentUser==null?'无':scope.row.parentUser.name }}
+                    {{ scope.row.employeeModel.parentUser==null?'无':scope.row.employeeModel.parentUser.name }}
                 </template>
             </el-table-column>
             <el-table-column label="经纪人" width="110" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.brokerUser==null?'无':scope.row.brokerUser.name }}
+                    {{ scope.row.employeeModel.brokerUser==null?'无':scope.row.employeeModel.brokerUser.name }}
                 </template>
             </el-table-column>
-            <el-table-column align="center" prop="created_at" label="操作">
+            <!-- <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                     <el-button class="filter-item" :type="scope.row.status | empolyeeStatusTypeBtnFilter"
                                @click="showEnableDialog(scope.row )">{{ scope.row.status |
@@ -92,12 +87,10 @@
                         scope.row.jobStatus |
                         empolyeeJobStatusTypeBtnTxtFilter }}
                     </el-button>
-                    <!-- <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
-                        <el-button type="primary">签到日志</el-button>
-                    </router-link> -->
+                   
 
                 </template>
-            </el-table-column>
+            </el-table-column> -->
 
         </el-table>
 
@@ -170,7 +163,7 @@
 </template>
 
 <script>
-  import { getEmployeeList,updateEmployeeJobStatus, updateEmployeeStatus } from '@/api/employee/employee'
+  import { getEmployeeApplyList,getEmployeeList,updateEmployeeJobStatus, updateEmployeeStatus } from '@/api/employee/employee'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
 
@@ -203,7 +196,7 @@
         const jobStatusMap = {
           0: '入职',
           1: '离职',
-          2: '入职'
+          2: '删除'
         }
         return jobStatusMap[status]
       },
@@ -298,7 +291,7 @@
     methods: {
       fetchData() {
         this.listLoading = true
-        getEmployeeList(this.listQuery).then(response => {
+        getEmployeeApplyList(this.listQuery).then(response => {
           this.list = response.data.list
           this.listLoading = false
           this.total = response.data.total
@@ -319,7 +312,7 @@
           }else if(employee.jobStatus == 1){
               this.jobDialogTipText = '确定将员工状态改为离职吗?'
           }else if(employee.jobStatus == 2){
-              this.jobDialogTipText = '确定将员工状态改为入职吗?'
+             
           }
           this.jobStatusDialogVisible = true
       },
@@ -330,7 +323,6 @@
         }else if(this.editEmployee.jobStatus ==1){
             status  = 2
         }else{
-           status = 1
           return
         }
         updateEmployeeJobStatus(this.token, this.editEmployee.id, status).then(response => {

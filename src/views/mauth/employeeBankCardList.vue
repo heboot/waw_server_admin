@@ -32,27 +32,27 @@
             </el-table-column>
             <el-table-column label="名字" width="150">
                 <template slot-scope="scope">
-                    {{ scope.row.name }}
+                    {{ scope.row.employeeModel.name }}
                 </template>
             </el-table-column>
             <el-table-column label="电话" width="120">
                 <template slot-scope="scope">
-                    {{ scope.row.mobile }}
+                    {{ scope.row.employeeModel.mobile }}
                 </template>
             </el-table-column>
-            <el-table-column label="性别" width="60" align="center">
+            <el-table-column label="银行" width="60" align="center">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.sex | sexFilter }}</span>
+                    <span>{{ scope.row.name   }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="年龄" width="60" align="center">
+            <el-table-column label="卡号" width="150" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.age }}
+                    {{ scope.row.bankNumber }}
                 </template>
             </el-table-column>
             <el-table-column label="审核状态" width="110" align="center">
                 <template slot-scope="scope">
-                    <el-tag :type="scope.row.idCardStatus | statusJobTypeFilter">{{ scope.row.idCardStatus | statusJobFilter
+                    <el-tag :type="scope.row.employeeModel.bankCardstatus | statusJobTypeFilter">{{ scope.row.employeeModel.bankCardstatus | statusJobFilter
                         }}
                     </el-tag>
                 </template>
@@ -86,16 +86,16 @@
         
 
         <el-dialog
-                title="身份证图片"
+                title="银行卡图片"
                 :visible.sync="disabledialogVisible"
                 width="30%"
                 :before-close="handleClose">
              
-            <img :src="editEmployee.idCardPicFace" style="width: 300px;height: 150px" @click="showDetailDialog(editEmployee.idCardPicFace)" />
-<img :src="editEmployee.idCardPic" style="width: 300px;height: 150px"  @click="showDetailDialog(editEmployee.idCardPic)"/>
+            <img :src="editEmployee.picFront" style="width: 300px;height: 150px" @click="showDetailDialog(editEmployee.picFront)" />
+<img :src="editEmployee.picReverse" style="width: 300px;height: 150px"  @click="showDetailDialog(editEmployee.picReverse)"/>
             <span slot="footer" class="dialog-footer">
-              <el-button  type="success" @click="updateStatus(2)">通过</el-button>
-              <el-button type="danger" @click="updateStatus(-1)">失败</el-button>
+              <el-button  type="success" @click="updateBankStatus(2)">通过</el-button>
+              <el-button type="danger" @click="updateBankStatus(-1)">失败</el-button>
     <el-button type="info" @click="disabledialogVisible = false">关闭</el-button>
     <!-- <el-button type="primary" @click="doupdateEmployeeStatus(0)">确 定</el-button> -->
   </span>
@@ -115,13 +115,13 @@
 </template>
 
 <script>
-  import { updateEmployeeIDCardStatus,getEmployeeIdCardList} from '@/api/employee/employee'
+  import { updateEmployeeBankStatus,getEmployeeBankCardList} from '@/api/employee/employee'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
   
 
   export default {
-    name: 'employeeIdCardList',
+    name: 'employeeBankCardList',
     components: { Pagination },
     filters: {
        
@@ -182,7 +182,9 @@
         jobStatusDialogVisible:false,
         jobDialogTipText:'',
         editEmployee: {
-          idCardPicFace:""
+          picFront:"",
+          picReverse:"",
+
         }
       }
     },
@@ -192,22 +194,22 @@
     methods: {
       fetchData() {
         this.listLoading = true
-        getEmployeeIdCardList(this.listQuery).then(response => {
+        getEmployeeBankCardList(this.listQuery).then(response => {
           this.list = response.data.list
           this.listLoading = false
           this.total = response.data.total
         })
       },
-      updateStatus(status){
-          updateEmployeeIDCardStatus(this.token,this.editEmployee.id,status).then(response => {
-            this.isabledialogVisible=false
+      updateBankStatus(status){
+          updateEmployeeBankStatus(this.token,this.editEmployee.id,status).then(response => {
+           this.disabledialogVisible=false
            this.$notify({
             title: '成功',
             message: '更新成功',
             type: 'success',
             duration: 2000
           })
-           this.fetchData()
+          this.fetchData()
         })
       },
       showDetailDialog(url){
