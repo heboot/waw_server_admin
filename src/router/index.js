@@ -104,6 +104,12 @@ export const asyncRouterMap = [
         name: 'employeeJoinList',
         component: () => import('@/views/employee/employeeJoinList'),
         meta: { title: '报名列表', icon: 'tree',roles:['admin','editor','broker'] }
+      },
+      {
+        path: 'employeeJoinedList',
+        name: 'employeeJoinedList',
+        component: () => import('@/views/employee/employeeJoinedList'),
+        meta: { title: '入职列表', icon: 'tree',roles:['admin','editor','broker'] }
       }
     ]
   },

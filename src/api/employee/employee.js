@@ -16,6 +16,14 @@ export function getEmployeeApplyList(params) {
   })
 }
 
+export function getEmployeeJoinList(params) {
+  return request({
+    url: '/employee/getEmployeeJoinList',
+    method: 'post',
+    params
+  })
+}
+
 export function getEmployeeIdCardList(params) {
   return request({
     url: '/adminuser/idCardList',
@@ -58,11 +66,11 @@ export function updateEmployeeBankStatus(token,uid,status) {
 }
 
 
-export function updateEmployeeJobStatus(token,employeeId,status) {
+export function updateEmployeeJobStatus(token,employeeId,status,eid) {
   return request({
     url: '/employee/updateEmployeeJobStatus',
     method: 'post',
-    params:{token,employeeId,status}
+    params:{token,employeeId,status,eid}
   })
 }
 

@@ -56,8 +56,9 @@ module.exports = {
      * for example GitHub pages. If you plan to deploy your site to https://foo.github.io/bar/,
      * then assetsPublicPath should be set to "/bar/".
      * In most cases please use '/' !!!
+     * 自己改为了./
      */
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps

@@ -32,57 +32,52 @@
             </el-table-column>
             <el-table-column label="名字" width="150">
                 <template slot-scope="scope">
-                    {{ scope.row.name }}
+                    {{ scope.row.employeeModel.name==null?"":scope.row.employeeModel.name}}
                 </template>
             </el-table-column>
             <el-table-column label="电话" width="150">
                 <template slot-scope="scope">
-                    {{ scope.row.mobile }}
+                    {{ scope.row.employeeModel.mobile }}
                 </template>
             </el-table-column>
             <el-table-column label="性别" width="60" align="center">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.sex | sexFilter }}</span>
+                    <span>{{ scope.row.employeeModel.sex | sexFilter }}</span>
                 </template>
             </el-table-column>
-            <el-table-column label="年龄" width="60" align="center">
+            
+            <el-table-column label="报名职位" width="140" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.age }}
+                    <span>{{ scope.row.enterprise == null?"":(scope.row.enterprise.name==null?"":scope.row.enterprise.name)}}</span>
                 </template>
             </el-table-column>
+
+            <el-table-column label="入职时间" width="150" align="center">
+                <template slot-scope="scope">
+                      <span>{{ scope.row.joinTime }}</span>
+                </template>
+            </el-table-column>
+
             <el-table-column label="工作状态" width="110" align="center">
                 <template slot-scope="scope">
-                    <el-tag :type="scope.row.jobStatus | statusJobTypeFilter">{{ scope.row.jobStatus | statusJobFilter
+                    <el-tag :type="scope.row.employeeModel.jobStatus | statusJobTypeFilter">{{ scope.row.employeeModel.jobStatus | statusJobFilter
                         }}
                     </el-tag>
                 </template>
             </el-table-column>
 
-            <!-- <el-table-column label="提现状态" width="110" align="center">
+
+            <el-table-column class-name="status-col" label="渠道" width="100" align="center">
                 <template slot-scope="scope">
-                    <el-tag :type="scope.row.cashStatus | statusCashTypeFilter">{{ scope.row.cashStatus |
-                        statusCashFilter }}
-                    </el-tag>
-                </template>
-            </el-table-column> -->
-            <el-table-column label="员工状态" width="110" align="center">
-                <template slot-scope="scope">
-                    <el-tag :type="scope.row.status | empolyeeStatusTypeFilter">{{ scope.row.status |
-                        empolyeeStatusFilter }}
-                    </el-tag>
+                    {{ scope.row.employeeModel.parentUser==null?'无':scope.row.employeeModel.parentUser.name }}
                 </template>
             </el-table-column>
-            <!-- <el-table-column class-name="status-col" label="渠道" width="100" align="center">
-                <template slot-scope="scope">
-                    {{ scope.row.parentUser==null?'无':scope.row.parentUser.name }}
-                </template>
-            </el-table-column> -->
             <el-table-column label="经纪人" width="110" align="center">
                 <template slot-scope="scope">
-                    {{ scope.row.brokerUser==null?'无':scope.row.brokerUser.name }}
+                    {{ scope.row.employeeModel.brokerUser==null?'无':scope.row.employeeModel.brokerUser.name }}
                 </template>
             </el-table-column>
-            <el-table-column align="center" prop="created_at" label="操作">
+            <!-- <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                     <el-button class="filter-item" :type="scope.row.status | empolyeeStatusTypeBtnFilter"
                                @click="showEnableDialog(scope.row )">{{ scope.row.status |
@@ -92,12 +87,10 @@
                         scope.row.jobStatus |
                         empolyeeJobStatusTypeBtnTxtFilter }}
                     </el-button>
-                    <!-- <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
-                        <el-button type="primary">签到日志</el-button>
-                    </router-link> -->
+                   
 
                 </template>
-            </el-table-column>
+            </el-table-column> -->
 
         </el-table>
 
@@ -108,115 +101,16 @@
                 :limit.sync="listQuery.pageSize"
                 @pagination="fetchData"/>
 
-        <el-dialog :title="dialogStatus" :visible.sync="dialogFormVisible">
-            <el-form
-                    ref="dataForm"
-                    :model="editmoney"
-                    label-position="left"
-
-                    label-width="70px"
-                    style="width: 400px; margin-left:50px;">
-                <el-form-item>
-                    <el-input v-model="enterpriseSubsidyInfo" placeholder="请输入补贴描述"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-input v-model="input" placeholder="请输入价格"/>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitUpdateSubsidy()">提交</el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
-
-        <el-dialog
-                title="提示"
-                :visible.sync="enabledialogVisible"
-                width="30%"
-                :before-close="handleClose">
-            <span>确定要启用该员工吗</span>
-            <span slot="footer" class="dialog-footer">
-    <el-button @click="enabledialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="doupdateEmployeeStatus(1)">确 定</el-button>
-  </span>
-        </el-dialog>
-
-        <el-dialog
-                title="提示"
-                :visible.sync="disabledialogVisible"
-                width="30%"
-                :before-close="handleClose">
-            <span>确定要禁用该员工吗，禁用后该员工将无法登录系统</span>
-            <span slot="footer" class="dialog-footer">
-    <el-button @click="disabledialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="doupdateEmployeeStatus(0)">确 定</el-button>
-  </span>
-        </el-dialog>
-
-        <el-dialog
-                title="提示"
-                :visible.sync="jobStatusDialogVisible"
-                width="30%"
-                :before-close="handleClose">
-            <span>{{jobDialogTipText}}</span>
-            <span slot="footer" class="dialog-footer">
-               
-    <el-button @click="jobStatusDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="doupdateEmployeeJobStatus()">确 定</el-button> 
-  </span>
-        </el-dialog>
-
-
-        <el-dialog  title="选择职位"
-                :visible.sync="chooseEnterpriseDialogVisible"
-                width="60%"
-                :before-close="handleClose">
-
-  <el-table  height="300px"
-  @current-change="handleCurrentChange"
-                style="margin-top: 10px;"
-                v-loading="listLoading"
-                :data="enterpriseList"
-                element-loading-text="加载中"
-                border
-                fit
-                highlight-current-row>
-            <el-table-column align="center" label="编号" width="95">
-                <template slot-scope="scope">
-                    {{ scope.row.id }}
-                </template>
-            </el-table-column>
-            <el-table-column label="企业名称">
-                <template slot-scope="scope">
-                    {{ scope.row.name }}
-                </template>
-            </el-table-column>
-            <el-table-column label="最新补贴报价" width="110" align="center">
-                <template slot-scope="scope">
-                    <span>{{ scope.row.subsidyInfo }}</span><br/>
-                    <span>{{  scope.row.subsidyMoney }}元</span>
-                </template>
-            </el-table-column>
-            <!-- <el-table-column label="打包价格" width="110" align="center">
-                <template slot-scope="scope">
-                    {{ scope.row.packageMoney==null || scope.row.packageMoney==0 ?"500元": scope.row.packageMoney+"元" }}
-                </template>
-            </el-table-column> -->
-            
-        </el-table>
- <el-button style="margin:30px" @click="chooseEnterpriseDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="doupdateEmployeeJobStatus()">确 定</el-button>
-        </el-dialog>
-
+         
 
     </div>
 
 </template>
 
 <script>
-  import { getEmployeeList,updateEmployeeJobStatus, updateEmployeeStatus } from '@/api/employee/employee'
+  import { getEmployeeJoinList,getEmployeeList,updateEmployeeJobStatus, updateEmployeeStatus } from '@/api/employee/employee'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
-  import {  getEnterpriseList  } from '@/api/enterprise/enterlist'
 
   export default {
     name: 'EmployeeList',
@@ -247,7 +141,7 @@
         const jobStatusMap = {
           0: '入职',
           1: '离职',
-          2: '入职'
+          2: '删除'
         }
         return jobStatusMap[status]
       },
@@ -311,7 +205,6 @@
         enterpriseSubsidyInfo: '',
         input: '',
         list: null,
-        enterpriseList:null,
         total: 0,
         listLoading: true,
         listQuery: {
@@ -321,7 +214,6 @@
           key: '',
           type: '0'
         },
-        currentRow:null,
         token: getToken(),
         dialogStatus: '',
         dialogFormVisible: false,
@@ -334,30 +226,20 @@
         enabledialogVisible: false,//启用弹框
         disabledialogVisible: false,//禁用弹框
         jobStatusDialogVisible:false,
-        chooseEnterpriseDialogVisible:false,
         jobDialogTipText:'',
                 editEmployee: null
       }
     },
     created() {
-      this.fetchData(),
-      this.getEnterpriseListData()
+      this.fetchData()
     },
     methods: {
       fetchData() {
         this.listLoading = true
-        getEmployeeList(this.listQuery).then(response => {
+        getEmployeeJoinList(this.listQuery).then(response => {
           this.list = response.data.list
           this.listLoading = false
           this.total = response.data.total
-        })
-      },
-      getEnterpriseListData() {
-        this.listLoading = true
-        getEnterpriseList(this.listQuery).then(response => {
-          this.enterpriseList = response.data.list
-          this.listLoading = false
-          
         })
       },
       showEnableDialog(employee) {
@@ -372,47 +254,23 @@
         this.editEmployee = employee
           if(employee.jobStatus == 0){
               this.jobDialogTipText = '确定将员工状态改为入职吗?'
-              this.chooseEnterpriseDialogVisible = true
           }else if(employee.jobStatus == 1){
               this.jobDialogTipText = '确定将员工状态改为离职吗?'
-                this.jobStatusDialogVisible = true
           }else if(employee.jobStatus == 2){
-              this.jobDialogTipText = '确定将员工状态改为入职吗?'
-                this.chooseEnterpriseDialogVisible = true
+             
           }
-        
-      },
-       handleCurrentChange(val) {
-         console.log(val)
-        this.currentRow = val;
+          this.jobStatusDialogVisible = true
       },
       doupdateEmployeeJobStatus(){
         var status = undefined
         if(this.editEmployee.jobStatus == 0){
             status = 1
-            if(this.currentRow == null){
-            this.$message({
-            message: '请先选择职位哦',
-            type: 'error',
-            duration: 2000
-          })
-          return
-        }
         }else if(this.editEmployee.jobStatus ==1){
             status  = 2
         }else{
-           status = 1
-          if(this.currentRow == null){
-            this.$message({
-            message: '请先选择职位哦',
-            type: 'error',
-            duration: 2000
-          })
           return
         }
-        }
-
-        updateEmployeeJobStatus(this.token, this.editEmployee.id, status,this.currentRow.id).then(response => {
+        updateEmployeeJobStatus(this.token, this.editEmployee.id, status).then(response => {
           this.editEmployee.jobStatus = status
           for (const v of this.list) {
             console.log(v.id)
@@ -422,7 +280,10 @@
               break
             }
           }
+           
             this.jobStatusDialogVisible = false
+          
+
           this.editEmployee = null
           this.$notify({
             title: '成功',
@@ -448,7 +309,7 @@
           } else {
             this.disabledialogVisible = false
           }
-        this.chooseEnterpriseDialogVisible = false
+
           this.editEmployee = null
           this.$notify({
             title: '成功',

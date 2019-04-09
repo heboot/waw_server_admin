@@ -49,11 +49,11 @@
                     <span>{{  scope.row.subsidyMoney }}元</span>
                 </template>
             </el-table-column>
-            <el-table-column label="打包价格" width="110" align="center">
+            <!-- <el-table-column label="打包价格" width="110" align="center">
                 <template slot-scope="scope">
                     {{ scope.row.packageMoney==null || scope.row.packageMoney==0 ?"500元": scope.row.packageMoney+"元" }}
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column class-name="status-col" label="状态" width="100" align="center">
                 <template slot-scope="scope">
                     <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status | statusFilter2 }}</el-tag>
@@ -62,7 +62,7 @@
             <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                     <el-button class="filter-item" type="primary" @click="handleUpdate(scope.row)">设置补贴价格</el-button>
-                    <el-button class="filter-item" type="primary" @click="handlePackageUpdate(scope.row)">设置打包价格</el-button>
+                     <!-- <el-button class="filter-item" type="primary" @click="handlePackageUpdate(scope.row)">设置打包价格</el-button> -->
                     <router-link :to="{path:'/enterprise/enterpriseEdit',query:{enterprise:scope.row}}">
                         <el-button type="primary">编辑</el-button>
                     </router-link>

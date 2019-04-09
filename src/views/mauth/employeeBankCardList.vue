@@ -182,6 +182,7 @@
         jobStatusDialogVisible:false,
         jobDialogTipText:'',
         editEmployee: {
+          id:null,
           picFront:"",
           picReverse:"",
 
@@ -201,7 +202,7 @@
         })
       },
       updateBankStatus(status){
-          updateEmployeeBankStatus(this.token,this.editEmployee.id,status).then(response => {
+          updateEmployeeBankStatus(this.token,this.editEmployee.employeeModel.id,status).then(response => {
            this.disabledialogVisible=false
            this.$notify({
             title: '成功',
