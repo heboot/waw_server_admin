@@ -4,7 +4,7 @@
     <div class="dashboard-text">欢迎你，{{ name }}</div>
     <!-- <div class="dashboard-text">roles:<span v-for="role in roles" :key="role">{{ role }}</span></div> -->
 
-<panel-group @handleSetLineChartData="handleSetLineChartData"/>
+<!-- <panel-group @handleSetLineChartData="handleSetLineChartData"/> -->
 
     
   </div>

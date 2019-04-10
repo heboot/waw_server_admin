@@ -81,3 +81,12 @@ export function getEmployeeSignLogList(params) {
     params
   })
 }
+
+export function sendEmployeeJoinSubsidyMoney(token,employeeId,money) {
+  return request({
+    url: '/employee/sendEmployeeJoinSubsidyMoney',
+    method: 'post',
+    params:{token,employeeId,money}
+  })
+}
+

@@ -52,21 +52,15 @@
                 </template>
             </el-table-column>
             
-            <el-table-column label="报名职位" width="140" align="center">
+            <el-table-column label="推荐人号码" width="140" align="center">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.enterprise == null?"":(scope.row.enterprise.name==null?"":scope.row.enterprise.name)}}</span>
+                    <span>{{ scope.row.mobile }}</span>
                 </template>
             </el-table-column>
 
-            <el-table-column label="入职时间" width="150" align="center">
+            <el-table-column label="推荐人状态" width="110" align="center">
                 <template slot-scope="scope">
-                      <span>{{ scope.row.joinTime }}</span>
-                </template>
-            </el-table-column>
-
-            <el-table-column label="工作状态" width="110" align="center">
-                <template slot-scope="scope">
-                    <el-tag :type="scope.row.employeeModel.jobStatus | statusJobTypeFilter">{{ scope.row.employeeModel.jobStatus | statusJobFilter
+                    <el-tag :type="scope.row.joinStatus | statusJobTypeFilter">{{ scope.row.joinStatus | statusJobFilter
                         }}
                     </el-tag>
                 </template>
@@ -87,7 +81,7 @@
                 <template slot-scope="scope">
                      
                    <el-button hidden="true" class="filter-item" type="primary"  @click="showEnableDialog(scope.row.employeeModel)">{{
-                        scope.row.subsidyStatus |
+                        scope.row.status |
                         empolyeesubsidyStatusTypeBtnTxtFilter }}</el-button>
                    
 
@@ -132,18 +126,19 @@
 </template>
 
 <script>
-  import { sendEmployeeJoinSubsidyMoney,getEmployeeJoinList,getEmployeeList,updateEmployeeJobStatus, updateEmployeeStatus } from '@/api/employee/employee'
+  import { getCashList } from '@/api/cash/cash'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
 
   export default {
-    name: 'EmployeeList',
+    name: 'cashList',
     components: { Pagination },
     filters: {
        
       statusJobFilter(status) {
         const jobStatusMap = {
-          0: '已报名',
+          
+          0: '未入职',
           1: '工作中',
           2: '离职'
         }
@@ -151,8 +146,8 @@
       },
       empolyeesubsidyStatusTypeBtnTxtFilter(status) {
         const jobStatusMap = {
-          0: '发放补贴',
-          1: '已发放'
+          0: '未打款',
+          1: '已打款'
         }
         return jobStatusMap[status]
       },
@@ -212,7 +207,7 @@
     methods: {
       fetchData() {
         this.listLoading = true
-        getEmployeeJoinList(this.listQuery).then(response => {
+        getCashList(this.listQuery).then(response => {
           this.list = response.data.list
           this.listLoading = false
           this.total = response.data.total

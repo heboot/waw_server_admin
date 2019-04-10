@@ -46,33 +46,11 @@
                     {{ scope.row.employeeModel.mobile }}
                 </template>
             </el-table-column>
-            <el-table-column label="性别" width="60" align="center">
+             <el-table-column label="银行卡号" width="150">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.employeeModel.sex | sexFilter }}</span>
+                    {{scope.row.bankModel.name}}-{{ scope.row.bankModel.bankNumber}}
                 </template>
             </el-table-column>
-            
-            <el-table-column label="报名职位" width="140" align="center">
-                <template slot-scope="scope">
-                    <span>{{ scope.row.enterprise == null?"":(scope.row.enterprise.name==null?"":scope.row.enterprise.name)}}</span>
-                </template>
-            </el-table-column>
-
-            <el-table-column label="入职时间" width="150" align="center">
-                <template slot-scope="scope">
-                      <span>{{ scope.row.joinTime }}</span>
-                </template>
-            </el-table-column>
-
-            <el-table-column label="工作状态" width="110" align="center">
-                <template slot-scope="scope">
-                    <el-tag :type="scope.row.employeeModel.jobStatus | statusJobTypeFilter">{{ scope.row.employeeModel.jobStatus | statusJobFilter
-                        }}
-                    </el-tag>
-                </template>
-            </el-table-column>
-
-
             <el-table-column class-name="status-col" label="渠道" width="100" align="center">
                 <template slot-scope="scope">
                     {{ scope.row.employeeModel.parentUser==null?'无':scope.row.employeeModel.parentUser.name }}
@@ -83,11 +61,26 @@
                     {{ scope.row.employeeModel.brokerUser==null?'无':scope.row.employeeModel.brokerUser.name }}
                 </template>
             </el-table-column>
+             <el-table-column label="提现金额" width="150">
+                <template slot-scope="scope">
+                    {{ scope.row.money }}
+                </template>
+            </el-table-column>
+             <el-table-column label="申请时间" width="150">
+                <template slot-scope="scope">
+                    {{ scope.row.createTime }}
+                </template>
+            </el-table-column>
+            <el-table-column label="提现状态" width="110" align="center">
+                <template slot-scope="scope">
+                    <el-tag :type="scope.row.status | statusJobTypeFilter">{{ scope.row.status | statusMoney}}</el-tag>
+                </template>
+            </el-table-column>
             <el-table-column align="center" prop="created_at" label="操作">
                 <template slot-scope="scope">
                      
-                   <el-button hidden="true" class="filter-item" type="primary"  @click="showEnableDialog(scope.row.employeeModel)">{{
-                        scope.row.subsidyStatus |
+                   <el-button hidden="true" class="filter-item" type="primary"  @click="showEnableDialog(scope.row)">{{
+                        scope.row.status |
                         empolyeesubsidyStatusTypeBtnTxtFilter }}</el-button>
                    
 
@@ -110,13 +103,9 @@
                 width="30%"
                 :before-close="handleClose">
                
-            <span>请先确认入职日期和补贴金额，谨慎操作</span>
- 
-           
-                     
-                    <el-input style="margin-top:40px" type="number" v-model="subsidyMoney" placeholder="请输入补贴金额"/>
-                
-          
+            <span>请先确认财务是否已往员工卡上打款，谨慎操作</span><br/>
+            <span>确定之后，该款项会从用户的余额账户扣除，生成提现记录</span>
+            
 
             <span slot="footer" class="dialog-footer">
     <el-button @click="disabledialogVisible = false">取 消</el-button>
@@ -132,27 +121,28 @@
 </template>
 
 <script>
-  import { sendEmployeeJoinSubsidyMoney,getEmployeeJoinList,getEmployeeList,updateEmployeeJobStatus, updateEmployeeStatus } from '@/api/employee/employee'
+  import { getCashList,updateEmployeeCashLogStatus } from '@/api/cash/cash'
   import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
   import { getToken, removeToken, setToken } from '@/utils/auth'
 
   export default {
-    name: 'EmployeeList',
+    name: 'cashList',
     components: { Pagination },
     filters: {
        
-      statusJobFilter(status) {
+      statusMoney(status) {
         const jobStatusMap = {
-          0: '已报名',
-          1: '工作中',
-          2: '离职'
+          
+          0: '未打款',
+          1: '已打款',
+          
         }
         return jobStatusMap[status]
       },
       empolyeesubsidyStatusTypeBtnTxtFilter(status) {
         const jobStatusMap = {
-          0: '发放补贴',
-          1: '已发放'
+          0: '打款',
+          1: '已打款'
         }
         return jobStatusMap[status]
       },
@@ -203,6 +193,7 @@
         jobStatusDialogVisible:false,
         jobDialogTipText:'',
         editEmployee: null,
+        editCashLog:null,
         subsidyMoney:null
       }
     },
@@ -212,20 +203,24 @@
     methods: {
       fetchData() {
         this.listLoading = true
-        getEmployeeJoinList(this.listQuery).then(response => {
+        getCashList(this.listQuery).then(response => {
           this.list = response.data.list
           this.listLoading = false
           this.total = response.data.total
         })
       },
       showEnableDialog(employee) {
-        this.editEmployee = employee
+        if(employee.status == 1){
+          return
+        }
+        this.editCashLog = employee
+        this.editEmployee = employee.employeeModel
      
           this.disabledialogVisible = true
        
       },
       doSendEmployeeJoinSubsidyMoney(){
-        sendEmployeeJoinSubsidyMoney(this.token,this.editEmployee.id, this.subsidyMoney).then(() => {
+        updateEmployeeCashLogStatus(this.token,this.editEmployee.id, this.editCashLog.money, this.editCashLog.id).then(() => {
          this.fetchData()
           this.disabledialogVisible = false
           this.enterpriseSubsidyInfo = null

@@ -188,7 +188,7 @@ export const asyncRouterMap = [
   {
     path: '/cash',
     component: Layout,
-    redirect: '/cashdata/index',
+    redirect: '/cash/index',
     name: 'cash',
     meta: {
       title: '财务数据',
@@ -196,23 +196,12 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'employeeList',
-        name: 'employeeList',
-        component: () => import('@/views/employee/index'),
-        meta: { title: '代理收益表', icon: 'table',roles:['admin'] }
+        path: 'cashList',
+        name: 'cashList',
+        component: () => import('@/views/cash/cashList'),
+        meta: { title: '提现申请表', icon: 'table',roles:['admin','editor','broker'] }
       },
-      {
-        path: 'employeeList',
-        name: 'employeeList',
-        component: () => import('@/views/employee/index'),
-        meta: { title: '经纪人收益表', icon: 'table',roles:['admin','editor'] }
-      },
-      {
-        path: 'employeeSignLogList',
-        name: 'employeeSignLogList',
-        component: () => import('@/views/employee/employeeSignList'),
-        meta: { title: '员工提现表', icon: 'tree',roles:['admin'] }
-      }
+      
     ]
   },
   {
