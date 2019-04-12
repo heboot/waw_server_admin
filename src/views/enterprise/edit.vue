@@ -21,8 +21,11 @@
                     <el-form-item label="企业说明">
                         <el-input style="" v-model="enterprise.info"></el-input>
                     </el-form-item>
+                       <el-form-item label="地址">
+                        <el-input style="" v-model="enterprise.address"></el-input>
+                    </el-form-item>
                     <el-form-item label="经纬度">
-                        <el-input style="" v-model="enterprise.salaryDate"></el-input>
+                        <el-input style="" v-model="enterprise.location">{{enterprise.lng}},{{enterprise.lat}}</el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="submitUpdateEnterprise()">提交</el-button>

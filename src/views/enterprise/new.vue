@@ -44,7 +44,7 @@
                         <el-input style="" v-model="enterprise.address"></el-input>
                     </el-form-item>
                     <el-form-item label="经纬度">
-                        <el-input style="" v-model="enterprise.salaryDate"></el-input>
+                        <el-input style="" v-model="enterprise.location"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="handleAdd()">提交</el-button>
@@ -238,7 +238,8 @@
           employPhysical: '需要',
           employForeign: '不查',
           gmtCreate: undefined,
-          icon:''
+          icon:'',
+          location:'',
         },
         activeName: 'enterprise_info',
         token: getToken(),
